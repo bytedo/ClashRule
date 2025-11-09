@@ -1,0 +1,22 @@
+# 需要代理的其他 AI 服务
+# 更新时间: 2025-11-10
+# 规则数量: 11
+
+# cursor
+DOMAIN-SUFFIX,cursor-cdn.com
+DOMAIN-SUFFIX,cursor.com
+DOMAIN-SUFFIX,DOMAI-SUFFIX,DOMAINFIX,cursor.sh
+DOMAIN-SUFFIX,cursorapi.com
+
+# perplexity
+DOMAIN-SUFFIX,perplexity.ai
+DOMAIN-SUFFIX,DOMAINFFIX,pplx.ai
+
+# 其他匹配
+DOMAIN-SUFFIX,dify.ai
+DOMAIN-SUFFIX,meta.ai
+DOMAIN-SUFFIX,DUFFIX,poe.com
+DOMAIN-SUFFIX,poecdn.net
+DOMAIN-SUFFIX,sora.com
+
+
