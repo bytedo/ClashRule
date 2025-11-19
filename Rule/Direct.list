@@ -1,6 +1,6 @@
 # 直连Domain
-# 更新时间: 2025-11-16
-# 规则数量: 4
+# 更新时间: 2025-11-19
+# 规则数量: 5
 
 DOMAIN-SUFFIX,1password.com,DIRECT
 DOMAIN-SUFFIX,nvidia.com,DIRECT

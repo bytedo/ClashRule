@@ -1,6 +1,6 @@
 # 需要代理的其他 AI 服务
-# 更新时间: 2025-11-10
-# 规则数量: 11
+# 更新时间: 2025-11-19
+# 规则数量: 14
 
 # cursor
 DOMAIN-SUFFIX,cursor-cdn.com
@@ -19,4 +19,8 @@ DOMAIN-SUFFIX,DUFFIX,poe.com
 DOMAIN-SUFFIX,poecdn.net
 DOMAIN-SUFFIX,sora.com
 
+# antigravity.google
+DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,beacons.gcp.gvt2.com
+DOMAIN-SUFFIX,daily-cloudcode-pa.sandbox.googleapis.com
 
