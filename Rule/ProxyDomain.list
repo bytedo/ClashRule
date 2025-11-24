@@ -2,7 +2,8 @@
 # 更新时间: 2025-11-19
 # 规则数量: 4
 
-DOMAIN-SUFFIX,nodeseek.com
+
+DOMAIN-SUFFIX,hostloc.com
 DOMAIN-SUFFIX,jike.info
 DOMAIN-SUFFIX,linux.do
-DOMAIN-SUFFIX,hostloc.com
+DOMAIN-SUFFIX,nodeseek.com
