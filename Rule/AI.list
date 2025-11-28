@@ -1,10 +1,11 @@
 # 需要代理的其他 AI 服务
 # 更新时间: 2025-11-19
-# 规则数量: 13
+# 规则数量: 14
 
 
 DOMAIN-SUFFIX,antigravity.google
 DOMAIN-SUFFIX,beacons.gcp.gvt2.com
+DOMAIN-SUFFIX,business.gemini.google
 DOMAIN-SUFFIX,cursor-cdn.com
 DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursor.sh
