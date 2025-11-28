@@ -3,10 +3,9 @@
 # 规则数量: 5
 
 
+DOMAIN-SUFFIX,1password.com
+DOMAIN-SUFFIX,nvidia.com
+
 IP-CIDR,159.138.78.0/23
 IP-CIDR,166.108.192.0/18
 IP-CIDR,168.195.92.0/22
-
-
-DOMAIN-SUFFIX,1password.com
-DOMAIN-SUFFIX,nvidia.com
