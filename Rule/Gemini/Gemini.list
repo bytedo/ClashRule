@@ -1,6 +1,6 @@
 # Gemini
 # 更新时间: 2025-11-29
-# 规则数量: 46
+# 规则数量: 47
 
 # 来源：https://support.google.com/a/answer/15627649?hl=zh-Hans
 
@@ -8,6 +8,7 @@ DOMAIN,yt3.ggpht.com
 DOMAIN,apis.google.com
 DOMAIN,alkalimakersuite-pa.clients6.google.com
 DOMAIN,ogads-pa.clients6.google.com
+DOMAIN,signaler-pa.clients6.google.com
 DOMAIN,waa-pa.clients6.google.com
 DOMAIN,gemini.google.com
 DOMAIN,lh3.google.com
