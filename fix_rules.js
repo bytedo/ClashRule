@@ -4,17 +4,15 @@
  *
  * 功能：
  * - 保留空行和注释
- * - 更新规则数量
- * - 区块内排序规则行（前缀小区块 + 主域排序 + IP-CIDR排序）
+ * - 更新第三行规则数量
+ * - 区块内排序规则行（前缀小区块 + 域名逐级排序 + IP-CIDR A段排序）
  * - 检查 .ini 文件 ruleset 与 custom_proxy_group
  * - 异步并行扫描子目录
- * - pre-commit 友好
+ * - Pre-commit 友好
  */
 
 import fs from "fs/promises";
 import path from "path";
-import os from "os";
-import { getBaseDomain, loadPSL } from "./psl_loader.js";
 
 const VALID_PREFIXES = [
     "DOMAIN",
@@ -62,6 +60,12 @@ function ipToNumber(ip) {
     }
 }
 
+// 域名逐级排序键
+function domainSortKey(domain) {
+    const parts = domain.split(".").reverse(); // 从后往前逐级排序
+    return parts.map(p => p.toLowerCase()).join("::");
+}
+
 // 提取排序键
 function extractSortKey(line) {
     const t = line.trim();
@@ -69,8 +73,7 @@ function extractSortKey(line) {
     if (!rest) return t.toLowerCase();
 
     if (prefix.startsWith("DOMAIN")) {
-        const base = getBaseDomain(rest.trim());
-        return `${prefix}::${base}::${rest.toLowerCase()}`;
+        return `${prefix}::${domainSortKey(rest.trim())}::${rest.toLowerCase()}`;
     } else if (prefix === "IP-CIDR") {
         const ip = rest.split("/")[0].trim();
         const num = ipToNumber(ip);
@@ -87,14 +90,13 @@ async function processListFile(file) {
     const errors = [];
     let ruleCount = 0;
 
-    // 检查规则并统计数量
     lines.forEach(line => {
         const err = checkListLine(line);
         if (err) errors.push(err);
         else if (line.trim() && !line.startsWith("#")) ruleCount++;
     });
 
-    // 更新规则数量
+    // 更新第三行规则数量
     const newLines = [...lines];
     const countLine = `# 规则数量: ${ruleCount}`;
     if (newLines.length >= 3) newLines[2] = countLine;
@@ -103,16 +105,30 @@ async function processListFile(file) {
         newLines.push(countLine);
     }
 
-    // 区块排序（#块分割 + 前缀小块 + 主域/IP排序）
+    // 区块排序
     const finalLines = [];
     let block = [];
 
     const flushBlock = () => {
         if (!block.length) return;
 
-        // 收集规则行和非规则行
         const ruleLines = block.filter(l => l.trim() && !l.trim().startsWith("#"));
-        const sortedRules = ruleLines.sort((a,b)=>extractSortKey(a).localeCompare(extractSortKey(b)));
+
+        // 前缀分组
+        const prefixGroups = {};
+        for (const line of ruleLines) {
+            const prefix = line.split(",",1)[0].trim();
+            if (!prefixGroups[prefix]) prefixGroups[prefix] = [];
+            prefixGroups[prefix].push(line);
+        }
+
+        // 排序每个前缀小块
+        const sortedRules = [];
+        Object.keys(prefixGroups).sort().forEach(prefix=>{
+            const arr = prefixGroups[prefix];
+            arr.sort((a,b)=>extractSortKey(a).localeCompare(extractSortKey(b)));
+            sortedRules.push(...arr);
+        });
 
         let idx = 0;
         for (const line of block) {
@@ -137,8 +153,11 @@ async function processListFile(file) {
     }
     flushBlock();
 
-    await fs.writeFile(file, finalLines.join("\n"), "utf8");
-    return errors;
+    const output = finalLines.join("\n");
+    const modified = output !== text;
+
+    if (modified) await fs.writeFile(file, output, "utf8");
+    return { errors, modified };
 }
 
 // 检查 .ini 文件
@@ -195,7 +214,6 @@ async function checkIniFile(file) {
 
 // 主函数
 async function main() {
-    await loadPSL(); // 确保 PSL 缓存
     const root = process.cwd();
     const allFiles = await walk(root);
     const listFiles = allFiles.filter(f => f.endsWith(".list"));
@@ -204,13 +222,13 @@ async function main() {
     let modifiedFiles = 0;
 
     await Promise.all(listFiles.map(async f => {
-        const errors = await processListFile(f);
+        const { errors, modified } = await processListFile(f);
         if (errors.length > 0) {
             console.log(`\n❌ [LIST] ${f}`);
             errors.forEach(e => console.log("   •", e));
             totalErrors += errors.length;
         }
-        modifiedFiles++;
+        if (modified) modifiedFiles++;
     }));
 
     await Promise.all(iniFiles.map(async f => {

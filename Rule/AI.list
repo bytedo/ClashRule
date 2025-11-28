@@ -1,21 +1,17 @@
 # 需要代理的其他 AI 服务
 # 更新时间: 2025-11-29
-# 规则数量: 15
+# 规则数量: 11
 
 
-DOMAIN-SUFFIX,antigravity.google
-DOMAIN-SUFFIX,biz-discoveryengine.googleapis.com
-DOMAIN-SUFFIX,cursor-cdn.com
-DOMAIN-SUFFIX,cursor.com
-DOMAIN-SUFFIX,cursor.sh
-DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,dify.ai
-DOMAIN-SUFFIX,DUFFIX,poe.com
-DOMAIN-SUFFIX,business.gemini.google
-DOMAIN-SUFFIX,beacons.gcp.gvt2.com
 DOMAIN-SUFFIX,meta.ai
 DOMAIN-SUFFIX,perplexity.ai
-DOMAIN-SUFFIX,poecdn.net
 DOMAIN-SUFFIX,pplx.ai
-DOMAIN-SUFFIX,daily-cloudcode-pa.sandbox.googleapis.com
+DOMAIN-SUFFIX,cursor-cdn.com
+DOMAIN-SUFFIX,cursor.com
+DOMAIN-SUFFIX,cursorapi.com
+DOMAIN-SUFFIX,beacons.gcp.gvt2.com
+DOMAIN-SUFFIX,poe.com
+DOMAIN-SUFFIX,poecdn.net
+DOMAIN-SUFFIX,cursor.sh
 
