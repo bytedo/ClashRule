@@ -1,8 +1,10 @@
 # 直连Domain
 # 更新时间: 2025-11-19
-# 规则数量: 5
+# 规则数量: 7
 
 
+DOMAIN-SUFFIX,hf.co
+DOMAIN-SUFFIX,cas-bridge.xethub.hf.co
 DOMAIN-SUFFIX,1password.com
 DOMAIN-SUFFIX,nvidia.com
 
