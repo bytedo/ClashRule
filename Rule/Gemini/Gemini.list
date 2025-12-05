@@ -1,6 +1,6 @@
 # Gemini
 # 更新时间: 2025-11-29
-# 规则数量: 44
+# 规则数量: 45
 
 # 来源：https://support.google.com/a/answer/15627649?hl=zh-Hans
 
@@ -33,6 +33,7 @@ DOMAIN,fonts.gstatic.com
 DOMAIN,maps.gstatic.com
 DOMAIN,ssl.gstatic.com
 DOMAIN,www.gstatic.com
+DOMAIN,edgedl.me.gvt1.com
 DOMAIN,csp.withgoogle.com
 DOMAIN,i.ytimg.com
 DOMAIN,ai.google.dev
