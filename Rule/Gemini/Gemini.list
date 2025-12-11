@@ -1,6 +1,6 @@
 # Gemini
 # 更新时间: 2025-11-29
-# 规则数量: 45
+# 规则数量: 47
 
 # 来源：https://support.google.com/a/answer/15627649?hl=zh-Hans
 
@@ -52,4 +52,6 @@ DOMAIN-SUFFIX,generativeai.google
 DOMAIN-SUFFIX,business.gemini.google
 
 # antigravity
+DOMAIN-SUFFIX,us-central1.run.app
+DOMAIN-SUFFIX,antigravity-unleash.goog
 DOMAIN-SUFFIX,antigravity.google
