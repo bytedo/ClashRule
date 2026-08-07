@@ -86,26 +86,70 @@ function extractSortKey(line) {
 // 处理 .list 文件
 async function processListFile(file) {
     const text = await fs.readFile(file, "utf8");
-    const lines = text.split(/\r?\n/);
+    let lines = text.split(/\r?\n/);
     const errors = [];
-    let ruleCount = 0;
+    const notes = [];
 
+    // 1. 合法性校验
     lines.forEach(line => {
         const err = checkListLine(line);
         if (err) errors.push(err);
-        else if (line.trim() && !line.startsWith("#")) ruleCount++;
     });
 
-    // 更新第三行规则数量
-    const newLines = [...lines];
+    // 2. 自动去重（保留首次出现）
+    const seen = new Set();
+    const deduped = [];
+    for (const line of lines) {
+        const t = line.trim();
+        if (t && !t.startsWith("#")) {
+            if (seen.has(t)) {
+                notes.push(`去重: ${t}`);
+                continue;
+            }
+            seen.add(t);
+        }
+        deduped.push(line);
+    }
+    lines = deduped;
+
+    // 3. 删除被 DOMAIN-SUFFIX 覆盖的 DOMAIN 冗余行
+    const suffixSet = new Set(
+        lines
+            .filter(l => l.trim().startsWith("DOMAIN-SUFFIX,"))
+            .map(l => l.trim().slice("DOMAIN-SUFFIX,".length).toLowerCase())
+    );
+    const noRedundant = [];
+    for (const line of lines) {
+        const t = line.trim();
+        if (t.startsWith("DOMAIN,")) {
+            const d = t.slice("DOMAIN,".length).toLowerCase();
+            if (suffixSet.has(d)) {
+                notes.push(`冗余删除: ${t} (被 DOMAIN-SUFFIX 覆盖)`);
+                continue;
+            }
+        }
+        noRedundant.push(line);
+    }
+    lines = noRedundant;
+
+    // 4. 更新规则数量行（定位 "# 规则数量:" 标记，找不到则在头部注释区末尾插入）
+    const ruleCount = lines.filter(l => {
+        const t = l.trim();
+        return t && !t.startsWith("#");
+    }).length;
     const countLine = `# 规则数量: ${ruleCount}`;
-    if (newLines.length >= 3) newLines[2] = countLine;
-    else {
-        while (newLines.length < 2) newLines.push("");
-        newLines.push(countLine);
+    const countIdx = lines.findIndex(l => l.trim().startsWith("# 规则数量:"));
+    if (countIdx === -1) {
+        let idx = 0;
+        while (idx < lines.length && lines[idx].trim().startsWith("#")) idx++;
+        lines.splice(idx, 0, countLine);
+        notes.push(`插入数量行: ${countLine}`);
+    } else if (lines[countIdx].trim() !== countLine) {
+        lines[countIdx] = countLine;
+        notes.push(`更新数量行: ${countLine}`);
     }
 
-    // 区块排序
+    // 5. 区块排序
     const finalLines = [];
     let block = [];
 
@@ -143,7 +187,7 @@ async function processListFile(file) {
         block = [];
     };
 
-    for (const line of newLines) {
+    for (const line of lines) {
         if (line.trim().startsWith("#")) {
             flushBlock();
             block.push(line);
@@ -157,7 +201,7 @@ async function processListFile(file) {
     const modified = output !== text;
 
     if (modified) await fs.writeFile(file, output, "utf8");
-    return { errors, modified };
+    return { errors, modified, notes };
 }
 
 // 检查 .ini 文件
@@ -222,11 +266,15 @@ async function main() {
     let modifiedFiles = 0;
 
     await Promise.all(listFiles.map(async f => {
-        const { errors, modified } = await processListFile(f);
+        const { errors, modified, notes } = await processListFile(f);
         if (errors.length > 0) {
             console.log(`\n❌ [LIST] ${f}`);
             errors.forEach(e => console.log("   •", e));
             totalErrors += errors.length;
+        }
+        if (notes.length > 0) {
+            console.log(`\nℹ️ [LIST] ${f}`);
+            notes.forEach(n => console.log("   •", n));
         }
         if (modified) modifiedFiles++;
     }));

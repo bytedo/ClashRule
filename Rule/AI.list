@@ -1,20 +1,28 @@
 # 需要代理的其他 AI 服务
-# 更新时间: 2025-12-13
-# 规则数量: 14
+# 更新时间: 2026-08-07
+# 规则数量: 22
 
 
 DOMAIN-SUFFIX,dify.ai
 DOMAIN-SUFFIX,meta.ai
+DOMAIN-SUFFIX,mistral.ai
+DOMAIN-SUFFIX,openrouter.ai
 DOMAIN-SUFFIX,perplexity.ai
 DOMAIN-SUFFIX,pplx.ai
+DOMAIN-SUFFIX,x.ai
 DOMAIN-SUFFIX,sora.chatgpt.com
+DOMAIN-SUFFIX,cohere.com
 DOMAIN-SUFFIX,cursor-cdn.com
 DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursorapi.com
+DOMAIN-SUFFIX,elevenlabs.com
 DOMAIN-SUFFIX,grok.com
 DOMAIN-SUFFIX,beacons.gcp.gvt2.com
+DOMAIN-SUFFIX,midjourney.com
 DOMAIN-SUFFIX,poe.com
 DOMAIN-SUFFIX,sora.com
+DOMAIN-SUFFIX,suno.com
+DOMAIN-SUFFIX,elevenlabs.io
 DOMAIN-SUFFIX,poecdn.net
 DOMAIN-SUFFIX,cursor.sh
 

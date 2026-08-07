@@ -1,11 +1,13 @@
 # Fake Location IP
-# 更新时间: 2025-12-13
-# 规则数量: 18
+# 更新时间: 2026-08-07
+# 规则数量: 22
 
 # DouYin
 DOMAIN,lf3-static.bytednsdoc.com
 DOMAIN,v5-dy-o-abtest.zjcdn.com
+DOMAIN-SUFFIX,douyin.com.cn
 DOMAIN-SUFFIX,amemv.com
+DOMAIN-SUFFIX,douyin.com
 DOMAIN-SUFFIX,douyincdn.com
 DOMAIN-SUFFIX,douyinpic.com
 DOMAIN-SUFFIX,douyinstatic.com
@@ -23,3 +25,7 @@ DOMAIN-SUFFIX,fengkongcloud.com
 DOMAIN-SUFFIX,xhscdn.com
 DOMAIN-SUFFIX,xiaohongshu.com
 DOMAIN-SUFFIX,xhscdn.net
+
+# KuaiShou
+DOMAIN-SUFFIX,gifshow.com
+DOMAIN-SUFFIX,kuaishou.com

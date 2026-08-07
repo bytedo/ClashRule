@@ -1,13 +1,13 @@
 # 直连Domain
-# 更新时间: 2025-11-19
+# 更新时间: 2026-08-07
 # 规则数量: 7
 
 
 DOMAIN-SUFFIX,hf.co
-DOMAIN-SUFFIX,cas-bridge.xethub.hf.co
+DOMAIN-SUFFIX,huggingface.co
 DOMAIN-SUFFIX,1password.com
 DOMAIN-SUFFIX,nvidia.com
 
-IP-CIDR,159.138.78.0/23
-IP-CIDR,166.108.192.0/18
-IP-CIDR,168.195.92.0/22
+IP-CIDR,159.138.78.0/23,no-resolve
+IP-CIDR,166.108.192.0/18,no-resolve
+IP-CIDR,168.195.92.0/22,no-resolve
