@@ -4,11 +4,15 @@
  *
  * 功能：
  * - 保留空行和注释
- * - 更新第三行规则数量
+ * - 更新规则数量行
  * - 区块内排序规则行（前缀小区块 + 域名逐级排序 + IP-CIDR A段排序）
+ * - 自动去重（相同行只保留首次出现）
+ * - 智能删除被 DOMAIN-SUFFIX 覆盖的 DOMAIN 冗余行（域名级后缀匹配，非仅完全相同）
+ * - 校验规则行合法性
+ * - 统一 LF 行尾
+ * - --check 模式：只检查不写文件，有改动/错误返回非 0（供 CI / pre-commit 使用）
  * - 检查 .ini 文件 ruleset 与 custom_proxy_group
  * - 异步并行扫描子目录
- * - Pre-commit 友好
  */
 
 import fs from "fs/promises";
@@ -22,8 +26,13 @@ const VALID_PREFIXES = [
     "IP-CIDR6",
     "URL-REGEX",
     "USER-AGENT",
-    "PROCESS-NAME"
+    "PROCESS-NAME",
+    "GEOSITE",
+    "GEOIP",
+    "MATCH"
 ];
+
+const CHECK_ONLY = process.argv.includes("--check") || process.argv.includes("-c");
 
 // 递归扫描子目录
 async function walk(root) {
@@ -46,6 +55,16 @@ function checkListLine(line) {
     if (!t || t.startsWith("#")) return null;
     const [prefix] = t.split(",", 1);
     if (!prefix || !VALID_PREFIXES.includes(prefix)) return `非法前缀或格式: ${line}`;
+    // DOMAIN 系列必须带参数；KEYWORD 是关键字不做域名格式校验
+    if (prefix.startsWith("DOMAIN") || prefix === "URL-REGEX" || prefix === "USER-AGENT" || prefix === "PROCESS-NAME") {
+        const rest = t.slice(prefix.length + 1).trim();
+        if (!rest) return `缺少参数: ${line}`;
+        if (prefix === "DOMAIN" || prefix === "DOMAIN-SUFFIX") {
+            if (!/^[a-zA-Z0-9.*-]+(\.[a-zA-Z0-9.*-]+)+$/.test(rest)) {
+                return `域名格式可疑: ${line}`;
+            }
+        }
+    }
     return null;
 }
 
@@ -60,9 +79,9 @@ function ipToNumber(ip) {
     }
 }
 
-// 域名逐级排序键
+// 域名逐级排序键（TLD 优先）
 function domainSortKey(domain) {
-    const parts = domain.split(".").reverse(); // 从后往前逐级排序
+    const parts = domain.split(".").reverse();
     return parts.map(p => p.toLowerCase()).join("::");
 }
 
@@ -74,7 +93,7 @@ function extractSortKey(line) {
 
     if (prefix.startsWith("DOMAIN")) {
         return `${prefix}::${domainSortKey(rest.trim())}::${rest.toLowerCase()}`;
-    } else if (prefix === "IP-CIDR") {
+    } else if (prefix === "IP-CIDR" || prefix === "IP-CIDR6") {
         const ip = rest.split("/")[0].trim();
         const num = ipToNumber(ip);
         return `${prefix}::${num.toString().padStart(10,"0")}::${rest}`;
@@ -83,7 +102,16 @@ function extractSortKey(line) {
     }
 }
 
-// 处理 .list 文件
+// 判断 domain 是否被某个 suffix 覆盖（自身相等或以 ".suffix" 结尾）
+function isCoveredBySuffix(domain, suffixSet) {
+    const d = domain.toLowerCase();
+    for (const s of suffixSet) {
+        if (d === s || d.endsWith("." + s)) return true;
+    }
+    return false;
+}
+
+// 处理 .list 文件，返回处理后的文本与备注
 async function processListFile(file) {
     const text = await fs.readFile(file, "utf8");
     let lines = text.split(/\r?\n/);
@@ -112,7 +140,7 @@ async function processListFile(file) {
     }
     lines = deduped;
 
-    // 3. 删除被 DOMAIN-SUFFIX 覆盖的 DOMAIN 冗余行
+    // 3. 智能删除被 DOMAIN-SUFFIX 覆盖的 DOMAIN 冗余行
     const suffixSet = new Set(
         lines
             .filter(l => l.trim().startsWith("DOMAIN-SUFFIX,"))
@@ -123,7 +151,7 @@ async function processListFile(file) {
         const t = line.trim();
         if (t.startsWith("DOMAIN,")) {
             const d = t.slice("DOMAIN,".length).toLowerCase();
-            if (suffixSet.has(d)) {
+            if (isCoveredBySuffix(d, suffixSet)) {
                 notes.push(`冗余删除: ${t} (被 DOMAIN-SUFFIX 覆盖)`);
                 continue;
             }
@@ -149,7 +177,7 @@ async function processListFile(file) {
         notes.push(`更新数量行: ${countLine}`);
     }
 
-    // 5. 区块排序
+    // 5. 区块排序（注释行分隔区块，区块内前缀分组 + 排序）
     const finalLines = [];
     let block = [];
 
@@ -166,11 +194,11 @@ async function processListFile(file) {
             prefixGroups[prefix].push(line);
         }
 
-        // 排序每个前缀小块
+        // 排序每个前缀小块（locale 固定 en，避免环境差异）
         const sortedRules = [];
         Object.keys(prefixGroups).sort().forEach(prefix=>{
             const arr = prefixGroups[prefix];
-            arr.sort((a,b)=>extractSortKey(a).localeCompare(extractSortKey(b)));
+            arr.sort((a,b)=>extractSortKey(a).localeCompare(extractSortKey(b), "en"));
             sortedRules.push(...arr);
         });
 
@@ -197,11 +225,12 @@ async function processListFile(file) {
     }
     flushBlock();
 
-    const output = finalLines.join("\n");
-    const modified = output !== text;
+    // 统一 LF；join 已保留末尾换行（split 产生的末尾空串），仅在缺失时补一个
+    let output = finalLines.join("\n");
+    if (finalLines.length && !output.endsWith("\n")) output += "\n";
+    const modified = output !== text.replace(/\r\n/g, "\n");
 
-    if (modified) await fs.writeFile(file, output, "utf8");
-    return { errors, modified, notes };
+    return { output, errors, modified, notes };
 }
 
 // 检查 .ini 文件
@@ -263,10 +292,10 @@ async function main() {
     const listFiles = allFiles.filter(f => f.endsWith(".list"));
     const iniFiles = allFiles.filter(f => f.endsWith(".ini"));
     let totalErrors = 0;
-    let modifiedFiles = 0;
+    let wouldModify = 0;
 
     await Promise.all(listFiles.map(async f => {
-        const { errors, modified, notes } = await processListFile(f);
+        const { output, errors, modified, notes } = await processListFile(f);
         if (errors.length > 0) {
             console.log(`\n❌ [LIST] ${f}`);
             errors.forEach(e => console.log("   •", e));
@@ -276,7 +305,10 @@ async function main() {
             console.log(`\nℹ️ [LIST] ${f}`);
             notes.forEach(n => console.log("   •", n));
         }
-        if (modified) modifiedFiles++;
+        if (modified) {
+            wouldModify++;
+            if (!CHECK_ONLY) await fs.writeFile(f, output, "utf8");
+        }
     }));
 
     await Promise.all(iniFiles.map(async f => {
@@ -288,7 +320,12 @@ async function main() {
         }
     }));
 
-    console.log(`\n🔍 扫描完成: 共 ${listFiles.length} 个 .list 文件, ${iniFiles.length} 个 .ini 文件, 修改 ${modifiedFiles} 个文件, 错误 ${totalErrors} 个`);
+    if (CHECK_ONLY && wouldModify > 0) {
+        console.log(`\n🔍 检查模式: ${wouldModify} 个文件需要修复，请先运行 node fix_rules.js`);
+        process.exit(1);
+    }
+
+    console.log(`\n🔍 扫描完成: 共 ${listFiles.length} 个 .list 文件, ${iniFiles.length} 个 .ini 文件, ${CHECK_ONLY ? "需修复" : "修改"} ${wouldModify} 个文件, 错误 ${totalErrors} 个`);
     process.exit(totalErrors > 0 ? 1 : 0);
 }
 

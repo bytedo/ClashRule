@@ -1,0 +1,34 @@
+name: 规则检查
+
+on:
+  push:
+    paths:
+      - "Rule/**"
+      - "*.list"
+      - "*.ini"
+      - "fix_rules.js"
+  pull_request:
+    paths:
+      - "Rule/**"
+      - "*.list"
+      - "*.ini"
+      - "fix_rules.js"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 运行规则检查
+        run: node fix_rules.js --check
+
+      - name: 确认无未提交改动
+        run: git diff --exit-code

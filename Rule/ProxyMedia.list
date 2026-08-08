@@ -1,6 +1,6 @@
 # 内容：国外媒体列表
 # 更新：2025-08-10 14:28:58
-# 规则数量: 325
+# 规则数量: 322
 
 
 # AbemaTV
@@ -128,8 +128,6 @@ DOMAIN-SUFFIX,hbo.com
 DOMAIN-SUFFIX,hbogo.com
 DOMAIN-SUFFIX,hbomax.com
 DOMAIN-SUFFIX,hbomaxcdn.com
-DOMAIN-SUFFIX,hbonow.com
-USER-AGENT,HBO%20NOW*
 USER-AGENT,HBOMAX*
 
 # HBO_GO_HKG
@@ -384,7 +382,6 @@ DOMAIN-SUFFIX,ext-twitch.tv
 DOMAIN-SUFFIX,twitch.tv
 
 # ViuTV
-DOMAIN,api.viu.now.com
 DOMAIN-SUFFIX,cognito-identity.us-east-1.amazonaws.com
 DOMAIN-SUFFIX,mobileanalytics.us-east-1.amazonaws.com
 DOMAIN-SUFFIX,viu.now.com
@@ -425,3 +422,4 @@ USER-AGENT,Crunchyroll*
 DOMAIN-SUFFIX,dmm-extension.com
 DOMAIN-SUFFIX,dmm.com
 DOMAIN-SUFFIX,dmm.co.jp
+
