@@ -1,6 +1,6 @@
 # 需要代理的其他 AI 服务
 # 更新时间: 2026-08-07
-# 规则数量: 22
+# 规则数量: 23
 
 
 DOMAIN-SUFFIX,dify.ai
@@ -25,4 +25,5 @@ DOMAIN-SUFFIX,suno.com
 DOMAIN-SUFFIX,elevenlabs.io
 DOMAIN-SUFFIX,poecdn.net
 DOMAIN-SUFFIX,cursor.sh
+DOMAIN-SUFFIX,anyrouter.top
 
