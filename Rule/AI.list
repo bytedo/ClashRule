@@ -1,36 +1,55 @@
 # 需要代理的其他 AI 服务
 # 更新时间: 2026-08-09
-# 规则数量: 30
+# 规则数量: 50
 
 
+DOMAIN-SUFFIX,blackforestlabs.ai
+DOMAIN-SUFFIX,character.ai
 DOMAIN-SUFFIX,dify.ai
+DOMAIN-SUFFIX,fal.ai
 DOMAIN-SUFFIX,fireworks.ai
+DOMAIN-SUFFIX,ideogram.ai
+DOMAIN-SUFFIX,jina.ai
+DOMAIN-SUFFIX,leonardo.ai
 DOMAIN-SUFFIX,lmarena.ai
+DOMAIN-SUFFIX,luma.ai
 DOMAIN-SUFFIX,meta.ai
 DOMAIN-SUFFIX,mistral.ai
 DOMAIN-SUFFIX,openrouter.ai
 DOMAIN-SUFFIX,perplexity.ai
 DOMAIN-SUFFIX,pplx.ai
+DOMAIN-SUFFIX,recraft.ai
+DOMAIN-SUFFIX,stability.ai
 DOMAIN-SUFFIX,together.ai
 DOMAIN-SUFFIX,x.ai
+DOMAIN-SUFFIX,pika.art
 DOMAIN-SUFFIX,hf.co
 DOMAIN-SUFFIX,huggingface.co
 DOMAIN-SUFFIX,sora.chatgpt.com
 DOMAIN-SUFFIX,civitai.com
+DOMAIN-SUFFIX,claudeusercontent.com
+DOMAIN-SUFFIX,codeium.com
 DOMAIN-SUFFIX,cohere.com
 DOMAIN-SUFFIX,cursor-cdn.com
 DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,elevenlabs.com
 DOMAIN-SUFFIX,grok.com
+DOMAIN-SUFFIX,hailuoai.com
+DOMAIN-SUFFIX,heygen.com
 DOMAIN-SUFFIX,midjourney.com
 DOMAIN-SUFFIX,poe.com
+DOMAIN-SUFFIX,replicate.com
+DOMAIN-SUFFIX,runwayml.com
 DOMAIN-SUFFIX,sora.com
 DOMAIN-SUFFIX,suno.com
+DOMAIN-SUFFIX,udio.com
+DOMAIN-SUFFIX,windsurf.com
+DOMAIN-SUFFIX,you.com
 DOMAIN-SUFFIX,v0.dev
 DOMAIN-SUFFIX,elevenlabs.io
+DOMAIN-SUFFIX,synthesia.io
 DOMAIN-SUFFIX,poecdn.net
 DOMAIN-SUFFIX,bolt.new
 DOMAIN-SUFFIX,cursor.sh
 DOMAIN-SUFFIX,anyrouter.top
-
