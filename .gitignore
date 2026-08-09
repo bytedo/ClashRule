@@ -1,0 +1,4 @@
+# 自动化临时产物（workflow 生成的 PR body 摘要）
+sync-summary.md
+health-report.txt
+domain-report.txt

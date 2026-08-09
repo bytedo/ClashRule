@@ -36,9 +36,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add -A
+          git add Rule/ fix_rules.js
           git commit -m "🤖 上游规则同步: 新增 ${{ steps.sync.outputs.added }} 条"
           git push origin "$BRANCH"
+          gh label create "auto-sync" --force 2>/dev/null || true
           gh pr create --base main --head "$BRANCH" \
             --title "🤖 上游规则同步: 新增 ${{ steps.sync.outputs.added }} 条" \
             --body-file sync-summary.md \
