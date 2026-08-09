@@ -12,10 +12,24 @@ https://raw.githubusercontent.com/bytedo/ClashRule/main/DefaultConfig.ini
 
 ruleset 顺序即规则匹配优先级：广告拦截 → AI → 媒体 → 游戏 → 大厂服务 → 国内媒体 → 全球直连 → 通用代理 → 漏网之鱼。
 
+## 配置文件（按场景选一个）
+
+| 文件 | 定位 | 说明 |
+|---|---|---|
+| DefaultConfig.ini | 日常全能 | 广告拦截 + AI + 媒体 + 游戏 + 大厂 + 国内媒体全量分流 |
+| PureConfig.ini | 纯净版 | 同 Default 但无广告拦截/应用净化，避免规则误杀（游戏、办公场景） |
+| MediaConfig.ini | 媒体解锁版 | 媒体规则前置，Netflix/油管/国外媒体默认香港/台湾节点，追剧首选 |
+| MiniConfig.ini | 极简版 | 仅 Telegram/Netflix/国外媒体 + 直连 + GFW，规则最少，适合路由器/低配设备 |
+
+全部配置共用同一套 Rule/ 规则文件，切换配置不影响规则维护。
+
 ## 目录结构
 
 ```
-├── DefaultConfig.ini           # subconverter 模板（ruleset + 分组策略）
+├── DefaultConfig.ini           # 日常全能配置（默认）
+├── PureConfig.ini              # 纯净版（无广告拦截）
+├── MediaConfig.ini             # 媒体解锁版（默认香港/台湾节点）
+├── MiniConfig.ini              # 极简版（弱设备）
 ├── fix_rules.js                # 规则维护脚本
 ├── scripts/                    # GitHub Actions 自动化脚本
 │   ├── sync-upstream.js        # 上游规则同步（自动 PR）
