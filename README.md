@@ -36,14 +36,12 @@ ruleset 顺序即规则匹配优先级：广告拦截 → AI → 媒体 → 游�
 │   ├── check-subscription.js   # ruleset URL 健康巡检（自动 issue）
 │   └── check-domains.js        # 规则域名 DNS 死链检测（自动 issue）
 ├── Rule/
-│   ├── AI.list                 # AI 服务代理（OpenAI/Claude/Gemini 等之外的长尾 AI 站）
+│   ├── AI.list                 # AI 服务代理（按服务商分类，含 Gemini 全家桶）
 │   ├── Direct.list             # 直连域名与 IP 段
 │   ├── ProxyDomain.list        # 强制代理的社区/论坛
 │   ├── ProxyMedia.list         # 国外流媒体（Netflix/Disney+/Spotify 等）
-│   ├── FakeLocation/
-│   │   └── app.list            # 国内 App 反 IP 归属（Fake IP 直连）
-│   └── Gemini/
-│       └── Gemini.list         # Gemini 全家桶（Google 官方清单）
+│   └── FakeLocation/
+│       └── app.list            # 国内 App 反 IP 归属（Fake IP 直连）
 ```
 
 ## 自动化（GitHub Actions）
