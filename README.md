@@ -17,6 +17,10 @@ ruleset 顺序即规则匹配优先级：广告拦截 → AI → 媒体 → 游�
 ```
 ├── DefaultConfig.ini           # subconverter 模板（ruleset + 分组策略）
 ├── fix_rules.js                # 规则维护脚本
+├── scripts/                    # GitHub Actions 自动化脚本
+│   ├── sync-upstream.js        # 上游规则同步（自动 PR）
+│   ├── check-subscription.js   # ruleset URL 健康巡检（自动 issue）
+│   └── check-domains.js        # 规则域名 DNS 死链检测（自动 issue）
 ├── Rule/
 │   ├── AI.list                 # AI 服务代理（OpenAI/Claude/Gemini 等之外的长尾 AI 站）
 │   ├── Direct.list             # 直连域名与 IP 段
@@ -27,6 +31,18 @@ ruleset 顺序即规则匹配优先级：广告拦截 → AI → 媒体 → 游�
 │   └── Gemini/
 │       └── Gemini.list         # Gemini 全家桶（Google 官方清单）
 ```
+
+## 自动化（GitHub Actions）
+
+| Workflow | 触发 | 产出 |
+|---|---|---|
+| 规则检查 | push / PR | 校验规则合法性，坏规则直接拦截 |
+| 上游规则同步 | 每周一 10:00 | 拉取 blackmatrix7 媒体分类，有新增自动开 PR（人工 review 后合并） |
+| 订阅健康巡检 | 每天 14:00 | 巡检 ini 引用全部 ruleset URL，异常自动开 issue |
+| 规则死域名检测 | 每周日 10:00 | 批量 DNS 解析规则域名，疑似失效自动开 issue |
+| 自动发布 Release | 规则文件变更 | 自动打 tag + 中文 changelog |
+
+自动化全部走 issue / PR 模式，不需要额外配置 token。
 
 ## 维护规则
 

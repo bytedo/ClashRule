@@ -1,0 +1,47 @@
+name: 规则死域名检测
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"   # 每周日 10:00（北京时间）
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: DNS 批量检测
+        id: check
+        continue-on-error: true
+        run: |
+          node scripts/check-domains.js > domain-report.txt 2>&1
+          cat domain-report.txt
+          echo "report<<EOF" >> "$GITHUB_OUTPUT"
+          cat domain-report.txt >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: 有死域名则告警 issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LABEL="dead-domain"
+          gh label create "$LABEL" --force 2>/dev/null || true
+          EXIST=$(gh issue list --label "$LABEL" --state open --json number -q '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXIST" ]; then
+            gh issue comment "$EXIST" --body-file domain-report.txt
+            echo "已更新 issue #$EXIST"
+          else
+            gh issue create --title "🧹 发现可能失效的规则域名（$(date +%F)）" \
+              --label "$LABEL" --body-file domain-report.txt
+          fi

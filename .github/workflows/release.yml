@@ -1,0 +1,53 @@
+name: 自动发布 Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Rule/**"
+      - "DefaultConfig.ini"
+      - "fix_rules.js"
+      - "scripts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 创建 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$(date +%Y.%m.%d.%H%M)"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "标签 $TAG 已存在，跳过"
+            exit 0
+          fi
+          PREV=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$PREV" ]; then
+            NOTES=$(git log --oneline --no-merges "$PREV"..HEAD | head -60)
+          else
+            NOTES=$(git log --oneline --no-merges | head -60)
+          fi
+          {
+            echo "## 更新内容"
+            echo
+            echo "$NOTES"
+            echo
+            echo "## 订阅模板"
+            echo "https://raw.githubusercontent.com/bytedo/ClashRule/$TAG/DefaultConfig.ini"
+          } > release-notes.md
+          git tag "$TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" \
+            --title "ClashRule $TAG" \
+            --notes-file release-notes.md
+          echo "已发布 $TAG"

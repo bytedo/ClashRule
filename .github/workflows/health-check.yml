@@ -1,0 +1,47 @@
+name: 订阅健康巡检
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 每天 14:00（北京时间）
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 巡检 ruleset URL
+        id: check
+        continue-on-error: true
+        run: |
+          node scripts/check-subscription.js > health-report.txt 2>&1
+          cat health-report.txt
+          echo "report<<EOF" >> "$GITHUB_OUTPUT"
+          cat health-report.txt >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: 有异常则告警 issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LABEL="health-check"
+          gh label create "$LABEL" --force 2>/dev/null || true
+          EXIST=$(gh issue list --label "$LABEL" --state open --json number -q '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXIST" ]; then
+            gh issue comment "$EXIST" --body-file health-report.txt
+            echo "已更新 issue #$EXIST"
+          else
+            gh issue create --title "⚠️ 订阅健康巡检异常（$(date +%F)）" \
+              --label "$LABEL" --body-file health-report.txt
+          fi

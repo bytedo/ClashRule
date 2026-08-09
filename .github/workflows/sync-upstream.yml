@@ -1,0 +1,45 @@
+name: 上游规则同步
+
+on:
+  schedule:
+    - cron: "0 2 * * 1"   # 每周一 10:00（北京时间）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 同步上游规则
+        id: sync
+        run: node scripts/sync-upstream.js --write
+
+      - name: 有更新则创建 PR
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="auto-sync/$(date +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "🤖 上游规则同步: 新增 ${{ steps.sync.outputs.added }} 条"
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "🤖 上游规则同步: 新增 ${{ steps.sync.outputs.added }} 条" \
+            --body-file sync-summary.md \
+            --label "auto-sync"
