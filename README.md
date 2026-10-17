@@ -69,6 +69,9 @@ node fix_rules.js --check   # 只检查不写回（CI 使用）
 
 ## 更新日志
 
+- 2026-10-17: AI 规则补充 + 死链检测修复
+  - AI.list 新增 43 个海外 AI 服务域名（Lovable/Replit/Devin/Sourcegraph/Tabnine/Continue/Zed、Runpod/Vast.ai/Lambda/Modal/Cerebras/SambaNova/AI21/Voyage/Baseten/Anyscale/DeepInfra、Kling 国际版/Higgsfield/Hedra/LTX Studio/Captions/Descript/Gamma/Playground/Magnific/Krea/OpenArt、Speechify/Resemble/Play.ht/Vapi/Bland/Retell/Fish Audio、Genspark/Phind/Abacus/Dust/LangChain/Napkin/Venice），101 → 144 条，全部经 DNS 核验
+  - 修正死链检测脚本逻辑：DOMAIN-SUFFIX 基域（nflximg.net/tiktokcdn.com 等）apex 常无 A 记录，改用 SOA/NS 判定存活，消除媒体/AI CDN 基域的大量误报；DOMAIN 精确主机仍严格要求 A/AAAA 记录
 - 2026-08-09: 工程化改造
   - fix_rules.js 支持 --check 模式、智能冗余删除（SUFFIX 覆盖 DOMAIN 域名级匹配）、稳定排序
   - AI.list 补 groq/together/fireworks/lmarena/v0.dev/bolt.new/civitai，移入 huggingface（直连不可达）

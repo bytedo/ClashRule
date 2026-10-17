@@ -1,6 +1,6 @@
 # 需要代理的其他 AI 服务
-# 更新时间: 2026-08-09
-# 规则数量: 101
+# 更新时间: 2026-10-17
+# 规则数量: 144
 
 # Google Gemini
 DOMAIN,yt3.ggpht.com
@@ -186,3 +186,134 @@ DOMAIN-SUFFIX,replicate.com
 
 # Jina AI
 DOMAIN-SUFFIX,jina.ai
+
+# —— 2026-10 新增（海外 AI 服务，均已 DNS 核验）——
+
+# Lovable
+DOMAIN-SUFFIX,lovable.dev
+
+# Replit
+DOMAIN-SUFFIX,replit.com
+
+# Sourcegraph
+DOMAIN-SUFFIX,sourcegraph.com
+
+# Tabnine
+DOMAIN-SUFFIX,tabnine.com
+
+# Continue
+DOMAIN-SUFFIX,continue.dev
+
+# Zed
+DOMAIN-SUFFIX,zed.dev
+
+# Devin
+DOMAIN-SUFFIX,devin.ai
+
+# Genspark
+DOMAIN-SUFFIX,genspark.ai
+
+# Phind
+DOMAIN-SUFFIX,phind.com
+
+# Abacus.AI
+DOMAIN-SUFFIX,abacus.ai
+
+# Dust
+DOMAIN-SUFFIX,dust.tt
+
+# LangChain / LangSmith
+DOMAIN-SUFFIX,langchain.com
+
+# Napkin AI
+DOMAIN-SUFFIX,napkin.ai
+
+# Gamma
+DOMAIN-SUFFIX,gamma.app
+
+# Venice AI
+DOMAIN-SUFFIX,venice.ai
+
+# Runpod
+DOMAIN-SUFFIX,runpod.io
+
+# Vast.ai
+DOMAIN-SUFFIX,vast.ai
+
+# Lambda Labs
+DOMAIN-SUFFIX,lambdalabs.com
+
+# Modal
+DOMAIN-SUFFIX,modal.com
+
+# Cerebras
+DOMAIN-SUFFIX,cerebras.ai
+
+# SambaNova
+DOMAIN-SUFFIX,sambanova.ai
+
+# AI21
+DOMAIN-SUFFIX,ai21.com
+
+# Voyage AI
+DOMAIN-SUFFIX,voyageai.com
+
+# Baseten
+DOMAIN-SUFFIX,baseten.co
+
+# Anyscale
+DOMAIN-SUFFIX,anyscale.com
+
+# DeepInfra
+DOMAIN-SUFFIX,deepinfra.com
+
+# Kling AI（可灵国际版）
+DOMAIN-SUFFIX,klingai.com
+
+# Higgsfield
+DOMAIN-SUFFIX,higgsfield.ai
+
+# Hedra
+DOMAIN-SUFFIX,hedra.com
+
+# LTX Studio
+DOMAIN-SUFFIX,ltx.studio
+
+# Captions
+DOMAIN-SUFFIX,captions.ai
+
+# Descript
+DOMAIN-SUFFIX,descript.com
+
+# Playground AI
+DOMAIN-SUFFIX,playground.com
+
+# Magnific
+DOMAIN-SUFFIX,magnific.ai
+
+# Krea
+DOMAIN-SUFFIX,krea.ai
+
+# OpenArt
+DOMAIN-SUFFIX,openart.ai
+
+# Speechify
+DOMAIN-SUFFIX,speechify.com
+
+# Resemble AI
+DOMAIN-SUFFIX,resemble.ai
+
+# Play.ht
+DOMAIN-SUFFIX,play.ht
+
+# Vapi
+DOMAIN-SUFFIX,vapi.ai
+
+# Bland AI
+DOMAIN-SUFFIX,bland.ai
+
+# Retell AI
+DOMAIN-SUFFIX,retellai.com
+
+# Fish Audio
+DOMAIN-SUFFIX,fish.audio
